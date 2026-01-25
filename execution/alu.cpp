@@ -381,10 +381,10 @@ void ALU::aas() {
     m_cpu->setReg8(Reg8::AH, ah);
 }
 
-void ALU::aam() {
+void ALU::aam(uint8 base) {
     uint8_t al = m_cpu->getReg8(Reg8::AL);
-    uint8_t ah = al / 10;
-    al = al % 10;
+    uint8_t ah = al / base;
+    al = al % base;
 
     m_cpu->setReg8(Reg8::AL, al);
     m_cpu->setReg8(Reg8::AH, ah);
@@ -394,11 +394,11 @@ void ALU::aam() {
     updateParity(al);
 }
 
-void ALU::aad() {
+void ALU::aad(uint8 base) {
     uint8_t al = m_cpu->getReg8(Reg8::AL);
     uint8_t ah = m_cpu->getReg8(Reg8::AH);
 
-    al = ah * 10 + al;
+    al = ah * base + al;
     ah = 0;
 
     m_cpu->setReg8(Reg8::AL, al);

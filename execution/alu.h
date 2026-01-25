@@ -119,8 +119,8 @@ public:
     /// @{
     void aaa();  ///< ASCII adjust after addition
     void aas();  ///< ASCII adjust after subtraction
-    void aam();  ///< ASCII adjust after multiplication
-    void aad();  ///< ASCII adjust before division
+    void aam(uint8 base = 10);  ///< ASCII adjust after multiplication
+    void aad(uint8 base = 10);  ///< ASCII adjust before division
     void daa();  ///< Decimal adjust after addition
     void das();  ///< Decimal adjust after subtraction
     /// @}
