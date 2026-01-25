@@ -499,6 +499,68 @@ bool Emulator::executeInstruction() {
             m_cpu.flags.CF = !m_cpu.flags.CF;
             return true;
 
+        // ========== BCD/ASCII adjust instructions ==========
+        case 0x27:  // DAA - Decimal adjust after addition
+        {
+            m_cpu.IP++;
+            ALU alu(&m_cpu);
+            alu.daa();
+            return true;
+        }
+
+        case 0x2F:  // DAS - Decimal adjust after subtraction
+        {
+            m_cpu.IP++;
+            ALU alu(&m_cpu);
+            alu.das();
+            return true;
+        }
+
+        case 0x37:  // AAA - ASCII adjust after addition
+        {
+            m_cpu.IP++;
+            ALU alu(&m_cpu);
+            alu.aaa();
+            return true;
+        }
+
+        case 0x3F:  // AAS - ASCII adjust after subtraction
+        {
+            m_cpu.IP++;
+            ALU alu(&m_cpu);
+            alu.aas();
+            return true;
+        }
+
+        case 0xD4:  // AAM - ASCII adjust after multiplication
+        {
+            m_cpu.IP++;
+            // AAM has an immediate byte (base), usually 0x0A for decimal
+            uint8 base = m_memory.readByte(m_cpu.calculatePhysicalAddress(m_cpu.CS, m_cpu.IP));
+            m_cpu.IP++;
+
+            if (base == 0) {
+                setError("AAM: division by zero");
+                return false;
+            }
+
+            ALU alu(&m_cpu);
+            alu.aam(base);
+            return true;
+        }
+
+        case 0xD5:  // AAD - ASCII adjust before division
+        {
+            m_cpu.IP++;
+            // AAD has an immediate byte (base), usually 0x0A for decimal
+            uint8 base = m_memory.readByte(m_cpu.calculatePhysicalAddress(m_cpu.CS, m_cpu.IP));
+            m_cpu.IP++;
+
+            ALU alu(&m_cpu);
+            alu.aad(base);
+            return true;
+        }
+
         case 0x9F:  // LAHF - Load AH from flags
             m_cpu.IP++;
             m_cpu.setReg8(Reg8::AH, m_cpu.flags.toWord() & 0xFF);
