@@ -1,4 +1,4 @@
-# e2emu Tests
+# E2Emu Tests
 
 Unit tests for the 8086 emulator using Google Test and NASM-assembled binaries.
 
