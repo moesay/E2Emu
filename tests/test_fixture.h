@@ -3,11 +3,11 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include <filesystem>
-#include "e2emu/core/emulator.h"
-#include "e2emu/core/cpu.h"
-#include "e2emu/core/memory.h"
-#include "e2emu/devices/vga_device.h"
-#include "e2emu/devices/port_controller.h"
+#include "E2Emu/core/emulator.h"
+#include "E2Emu/core/cpu.h"
+#include "E2Emu/core/memory.h"
+#include "E2Emu/devices/vga_device.h"
+#include "E2Emu/devices/port_controller.h"
 
 using namespace e2emu;
 
