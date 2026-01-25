@@ -1,0 +1,13 @@
+BITS 16
+ORG 0x100
+mov ax, 0
+mov ds, ax
+mov es, ax
+mov si, 0x2000
+mov di, 0x3000
+mov byte [0x2000], 0x11
+mov byte [0x2001], 0x22
+mov byte [0x2002], 0x33
+mov cx, 3
+rep movsb
+hlt

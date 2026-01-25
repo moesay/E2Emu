@@ -1,0 +1,5 @@
+BITS 16
+ORG 0x100
+mov al, 0x42
+out 0x60, al
+hlt

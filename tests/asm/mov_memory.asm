@@ -1,0 +1,6 @@
+BITS 16
+ORG 0x100
+mov ax, 0xabcd
+mov [0x2000], ax
+mov bx, [0x2000]
+hlt

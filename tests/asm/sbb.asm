@@ -1,0 +1,6 @@
+BITS 16
+ORG 0x100
+stc
+mov ax, 0x0020
+sbb ax, 0x0005
+hlt

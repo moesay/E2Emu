@@ -1,0 +1,5 @@
+BITS 16
+ORG 0x100
+mov word [0x3000], 0x1234
+mov ax, [0x3000]
+hlt
