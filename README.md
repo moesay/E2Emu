@@ -21,6 +21,8 @@
         <img src="https://img.shields.io/badge/Status-WIP-f10" /></a>
       <a href="https://github.com/moesay/e2emu/" alt="Dev Status">
         <img src="https://img.shields.io/badge/Developing-Active-green" /></a>
+      <a href="https://github.com/moesay/e2emu/actions/workflows/build-test.yml" alt="Status">
+        <img src="https://github.com/moesay/e2emu/actions/workflows/build-test.yml/badge.svg" /></a>
       <a href="https://github.com/moesay/e2emu/" alt="Repo Size">
         <img src="https://img.shields.io/github/repo-size/moesay/e2emu?label=Repository%20size" /></a>
       <a href="https://github.com/moesay/e2emu/issues/" alt="Issues">
