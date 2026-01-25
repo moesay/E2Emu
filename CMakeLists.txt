@@ -106,4 +106,14 @@ if(E2EMU_TEST)
     COMMAND e2emu_ut --gtest_color=yes
     DEPENDS e2emu_ut
   )
+
+  add_custom_target(check
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+    DEPENDS e2emu_ut
+  )
+
+  add_custom_target(check_verbose
+    COMMAND e2emu_ut --gtest_color=yes
+    DEPENDS e2emu_ut
+  )
 endif()
