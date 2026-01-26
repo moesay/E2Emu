@@ -1,0 +1,254 @@
+# E2Asm Code Formatting Configuration
+# Based on LLVM style with project-specific customizations
+# C++20 8086 assembler project
+
+BasedOnStyle: LLVM
+
+Language: Cpp
+Standard: c++20
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# Continuation indent for wrapped lines
+ContinuationIndentWidth: 4
+
+# Constructor initializer list indent
+ConstructorInitializerIndentWidth: 4
+
+# Don't indent inside namespaces
+NamespaceIndentation: None
+
+# Indent case labels
+IndentCaseLabels: true
+
+# Indent access modifiers half indent
+AccessModifierOffset: -2
+
+# Indent preprocessor directives
+IndentPPDirectives: BeforeHash
+
+# Maximum line length
+ColumnLimit: 100
+
+# Always break after return type for function definitions
+AlwaysBreakAfterReturnType: None
+
+# Break before braces style
+BreakBeforeBraces: Attach
+
+# Break constructor initializers before colon and commas
+BreakConstructorInitializers: BeforeColon
+
+# Break inheritance list before colon
+BreakInheritanceList: BeforeColon
+
+# Allow short blocks on single line
+AllowShortBlocksOnASingleLine: Empty
+
+# Allow short functions on single line
+AllowShortFunctionsOnASingleLine: Empty
+
+# Allow short if statements on single line
+AllowShortIfStatementsOnASingleLine: Never
+
+# Allow short loops on single line
+AllowShortLoopsOnASingleLine: false
+
+# Allow short case labels on single line
+AllowShortCaseLabelsOnASingleLine: false
+
+# Allow short enums on single line
+AllowShortEnumsOnASingleLine: false
+
+# Align consecutive assignments
+AlignConsecutiveAssignments: false
+
+# Align consecutive declarations
+AlignConsecutiveDeclarations: false
+
+# Align consecutive macros
+AlignConsecutiveMacros: false
+
+# Align escaped newlines left
+AlignEscapedNewlines: Left
+
+# Align operands of binary and ternary expressions
+AlignOperands: Align
+
+# Align trailing comments
+AlignTrailingComments: true
+
+# Space before parentheses
+SpaceBeforeParens: ControlStatements
+
+# No space before assignment operators
+SpaceBeforeAssignmentOperators: true
+
+# Space in empty parentheses
+SpaceInEmptyParentheses: false
+
+# Spaces in parentheses
+SpacesInParentheses: false
+
+# Spaces in square brackets
+SpacesInSquareBrackets: false
+
+# Spaces in C-style casts
+SpacesInCStyleCastParentheses: false
+
+# Space before range-based for loop colon
+SpaceBeforeRangeBasedForLoopColon: true
+
+# Space after template keyword
+SpaceAfterTemplateKeyword: true
+
+# Space before C++11 braced list
+SpaceBeforeCpp11BracedList: false
+
+# Align pointer to the left (with type)
+PointerAlignment: Left
+
+# Align reference to the left (with type)
+ReferenceAlignment: Left
+
+# Derive pointer alignment from previous lines
+DerivePointerAlignment: false
+
+# Always break before multiline strings
+AlwaysBreakBeforeMultilineStrings: false
+
+# Break before binary operators
+BreakBeforeBinaryOperators: None
+
+# Break before ternary operators
+BreakBeforeTernaryOperators: true
+
+# Allow all parameters on next line
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# Allow all arguments on next line
+AllowAllArgumentsOnNextLine: true
+
+# Bin pack arguments
+BinPackArguments: true
+
+# Bin pack parameters
+BinPackParameters: true
+
+# Break string literals
+BreakStringLiterals: true
+
+# Sort includes
+SortIncludes: CaseInsensitive
+
+# Include blocks style
+IncludeBlocks: Regroup
+
+# Include categories for proper grouping
+IncludeCategories:
+  # Project headers (e2asm internal)
+  - Regex:           '^".*\.h"$'
+    Priority:        1
+  # C++ standard library
+  - Regex:           '^<[a-z_]+>$'
+    Priority:        2
+  # C standard library
+  - Regex:           '^<c[a-z]+>$'
+    Priority:        3
+  # Other libraries
+  - Regex:           '^<.*>$'
+    Priority:        4
+
+# Reflow comments
+ReflowComments: true
+
+# Space before trailing comments
+SpacesBeforeTrailingComments: 2
+
+# Penalty for breaking before first call parameter
+PenaltyBreakBeforeFirstCallParameter: 19
+
+# Penalty for breaking a string
+PenaltyBreakString: 1000
+
+# Penalty for each character over column limit
+PenaltyExcessCharacter: 1000000
+
+# Penalty for breaking after return type
+PenaltyReturnTypeOnItsOwnLine: 60
+
+# Compact namespaces
+CompactNamespaces: false
+
+# Fix namespace end comments
+FixNamespaceComments: true
+
+# Keep empty lines at start of blocks
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Maximum consecutive empty lines
+MaxEmptyLinesToKeep: 1
+
+# Sort using declarations
+SortUsingDeclarations: true
+
+# Space after C-style cast
+SpaceAfterCStyleCast: false
+
+# Indent requires clause
+IndentRequiresClause: true
+
+# Requires clause position
+RequiresClausePosition: OwnLine
+
+# Parentheses indentation
+AlignAfterOpenBracket: Align
+
+# Lambda body indentation
+LambdaBodyIndentation: Signature
+
+# Pack constructor initializers
+PackConstructorInitializers: NextLine
+
+# Empty line before access modifier
+EmptyLineBeforeAccessModifier: LogicalBlock
+
+# Separate definition blocks
+SeparateDefinitionBlocks: Leave
+
+# Quote includes
+IncludeIsMainRegex: '(Test)?$'
+
+# Constructor initializer indent
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+
+# Allow short lambdas on single line
+AllowShortLambdasOnASingleLine: All
+
+# Indent goto labels
+IndentGotoLabels: true
+
+# Space in empty blocks
+SpaceInEmptyBlock: false
+
+# Spaces in line comment prefix
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: -1
+
+# Bit field colon spacing
+BitFieldColonSpacing: Both
+
+# Insert braces for control statements
+InsertBraces: false
+
+# Remove braces from LLVM style control statements
+RemoveBracesLLVM: false
+
+# Insert newlines for attribute alignment
+AttributeMacros: []
+
+# Qualifiers alignment (const, volatile)
+QualifierAlignment: Leave
