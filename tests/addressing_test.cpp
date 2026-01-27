@@ -27,3 +27,10 @@ TEST_F(EmulatorTest, BaseIndex) {
 
     EXPECT_EQ(emu.getCPU().AX, 0xFEDC);
 }
+
+TEST_F(EmulatorTest, SegmentOffset) {
+  ASSERT_TRUE(loadBinary("seg_offset"));
+  runUntilHalt();
+
+  EXPECT_EQ(emu.getMemory().readWord(0x10020), 0x1234);
+}
