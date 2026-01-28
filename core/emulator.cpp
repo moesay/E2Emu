@@ -54,6 +54,20 @@ void Emulator::reset() {
     // Initialize VGA to text mode
     m_vga->setVideoMode(VGADevice::VideoMode::TEXT_80x25_16COLOR);
 
+    // Initialize BIOS Data Area (segment 40h)
+    // 40h:49h = current video mode
+    m_memory.writeByte(0x449, 0x03);
+    // 40h:4Ah = number of screen columns (word)
+    m_memory.writeByte(0x44A, VGADevice::TEXT_WIDTH);
+    m_memory.writeByte(0x44B, 0x00);
+    // 40h:4Ch = size of current video page in bytes (word)
+    m_memory.writeByte(0x44C, static_cast<uint8>(VGADevice::TEXT_BUFFER_SIZE & 0xFF));
+    m_memory.writeByte(0x44D, static_cast<uint8>(VGADevice::TEXT_BUFFER_SIZE >> 8));
+    // 40h:62h = current active display page
+    m_memory.writeByte(0x462, 0x00);
+    // 40h:84h = number of rows minus 1
+    m_memory.writeByte(0x484, VGADevice::TEXT_HEIGHT - 1);
+
     notifyStateChanged(ExecutionState::HALTED);
 }
 
