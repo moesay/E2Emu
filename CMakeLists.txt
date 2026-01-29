@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
-project(e2emu)
+project(e2emu VERSION 1.1.0 LANGUAGES CXX)
+get_directory_property(parentDir PARENT_DIRECTORY)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,6 +10,30 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(E2EMU_SOURCE_FOLDERS core devices execution interrupts)
 
 option(E2EMU_TEST "Compile e2emu UT suite" OFF)
+
+find_package(Git QUIET)
+if(GIT_FOUND)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_TAG
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+    if(GIT_TAG)
+        string(REGEX REPLACE "^v" "" E2EMU_VERSION ${GIT_TAG})
+    else()
+      set(E2EMU_VERSION ${PROJECT_VERSION})
+    endif()
+else()
+  set(E2EMU_VERSION ${PROJECT_VERSION})
+endif()
+
+if(parentDir)
+  set(E2EMU_VERSION ${E2EMU_VERSION} PARENT_SCOPE)
+else()
+  set(E2EMU_VERSION ${E2EMU_VERSION})
+endif()
 
 foreach(dir ${E2EMU_SOURCE_FOLDERS})
   file(GLOB_RECURSE sources
@@ -53,21 +78,7 @@ if(E2EMU_TEST)
 
   add_subdirectory(tests/asm)
 
-  set(E2EMU_TEST_SOURCES
-    tests/mov_test.cpp
-    tests/arithmetic_test.cpp
-    tests/logic_test.cpp
-    tests/shift_test.cpp
-    tests/stack_test.cpp
-    tests/control_flow_test.cpp
-    tests/flag_test.cpp
-    tests/string_test.cpp
-    tests/misc_test.cpp
-    tests/addressing_test.cpp
-    tests/integration_test.cpp
-    tests/emulator_state_test.cpp
-    tests/device_test.cpp
-  )
+  file(GLOB E2EMU_TEST_SOURCES tests/*.cpp)
 
   add_executable(e2emu_ut ${E2EMU_TEST_SOURCES})
 
