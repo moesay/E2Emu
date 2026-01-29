@@ -11,6 +11,7 @@
 #include "../devices/vga_device.h"
 #include <functional>
 #include <map>
+#include <chrono>
 
 namespace e2emu {
 
@@ -93,6 +94,7 @@ private:
     bool handleInt16();  ///< Keyboard services
     bool handleInt21();  ///< DOS services
     bool handleInt13();  ///< Disk services (stub)
+    bool handleInt1A();  ///< Timer/RTC services
     /// @}
 
     /// @name INT 10h - Video services
@@ -100,6 +102,7 @@ private:
     void int10_SetVideoMode();
     void int10_SetCursorPosition();
     void int10_GetCursorPosition();
+    void int10_ScrollUp();
     void int10_TeletypeOutput();
     void int10_WriteChar();
     void int10_ReadChar();
@@ -120,6 +123,18 @@ private:
     void int21_ReadCharacter();
     void int21_Exit();
     /// @}
+
+    /// @name INT 1Ah - Timer/RTC services
+    /// @{
+    void int1A_GetSystemTime();
+    void int1A_SetSystemTime();
+    void int1A_GetRTCTime();
+    void int1A_GetRTCDate();
+    /// @}
+
+    uint32_t m_tick_count;
+    bool m_midnight_flag;
+    std::chrono::steady_clock::time_point m_start_time;
 };
 
 } // namespace e2emu
