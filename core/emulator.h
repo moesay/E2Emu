@@ -86,6 +86,9 @@ public:
 
     const PortController& getPortController() const { return m_port_controller; }
     PortController& getPortController() { return m_port_controller; }
+
+    const InterruptController& getInterruptController() const { return *m_interrupt_controller; }
+    InterruptController& getInterruptController() { return *m_interrupt_controller; }
     /// @}
 
     /**
