@@ -35,9 +35,8 @@ uint8 VGADevice::portIn(uint16 port) {
         case 0x3DA:  // Input Status Register
             // Bit 0: Display enable (always 1)
             // Bit 3: Vertical retrace (toggle for compatibility)
-            static bool vretrace = false;
-            vretrace = !vretrace;
-            return vretrace ? 0x08 : 0x00;
+            m_vretrace = !m_vretrace;
+            return m_vretrace ? 0x08 : 0x00;
 
         default:
             return 0xFF;

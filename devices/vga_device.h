@@ -140,6 +140,7 @@ private:
 
     uint8 m_crtc_index;
     uint8 m_crtc_data;
+    bool m_vretrace = false;  ///< Per-instance retrace toggle (must not be shared between emulators)
 
     void notifyUpdate();
     void scrollUp();
