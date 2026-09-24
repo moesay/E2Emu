@@ -4,19 +4,35 @@
  */
 
 #include "interrupt_controller.h"
+
 #include <ctime>
+
+namespace {
+
+// When several emulators are running, INT 1Ah will fail because it returns a pointer to a shared
+// static storage (races since each emulation is a thread)
+std::tm localTimeNow() {
+    std::time_t now = std::time(nullptr);
+    std::tm result{};
+#if defined(_WIN32)
+    localtime_s(&result, &now);
+#else
+    localtime_r(&now, &result);
+#endif
+    return result;
+}
+
+}  // namespace
 
 namespace e2emu {
 
 InterruptController::InterruptController(CPU* cpu, Memory* memory, VGADevice* vga)
-    : m_cpu(cpu)
-    , m_memory(memory)
-    , m_vga(vga)
-    , m_tick_count(0)
-    , m_midnight_flag(false)
-    , m_start_time(std::chrono::steady_clock::now())
-{
-}
+    : m_cpu(cpu),
+      m_memory(memory),
+      m_vga(vga),
+      m_tick_count(0),
+      m_midnight_flag(false),
+      m_start_time(std::chrono::steady_clock::now()) {}
 
 bool InterruptController::handleInterrupt(uint8 interrupt_num) {
     // Check for custom handlers first
@@ -152,8 +168,8 @@ void InterruptController::int10_GetCursorPosition() {
 
     m_cpu->setReg8(Reg8::DH, static_cast<uint8>(y));  // Row
     m_cpu->setReg8(Reg8::DL, static_cast<uint8>(x));  // Column
-    m_cpu->setReg8(Reg8::CH, 0);  // Cursor start scanline
-    m_cpu->setReg8(Reg8::CL, 7);  // Cursor end scanline
+    m_cpu->setReg8(Reg8::CH, 0);                      // Cursor start scanline
+    m_cpu->setReg8(Reg8::CL, 7);                      // Cursor end scanline
 }
 
 void InterruptController::int10_ScrollUp() {
@@ -164,8 +180,10 @@ void InterruptController::int10_ScrollUp() {
     uint8 bottom_row = m_cpu->getReg8(Reg8::DH);
     uint8 right_col = m_cpu->getReg8(Reg8::DL);
 
-    if (bottom_row >= VGADevice::TEXT_HEIGHT) bottom_row = VGADevice::TEXT_HEIGHT - 1;
-    if (right_col >= VGADevice::TEXT_WIDTH) right_col = VGADevice::TEXT_WIDTH - 1;
+    if (bottom_row >= VGADevice::TEXT_HEIGHT)
+        bottom_row = VGADevice::TEXT_HEIGHT - 1;
+    if (right_col >= VGADevice::TEXT_WIDTH)
+        right_col = VGADevice::TEXT_WIDTH - 1;
 
     if (lines == 0) {
         // Clear the window
@@ -322,7 +340,8 @@ void InterruptController::int21_PrintString() {
 
     while (true) {
         uint8 ch = m_memory->readByte(addr++);
-        if (ch == '$') break;
+        if (ch == '$')
+            break;
 
         m_vga->teletypeOutput(static_cast<char>(ch));
     }
@@ -386,17 +405,16 @@ bool InterruptController::handleInt1A() {
 void InterruptController::int1A_GetSystemTime() {
     // Calculate ticks since midnight at ~18.2065 Hz
     // Use real wall-clock time for the tick count
-    std::time_t now = std::time(nullptr);
-    std::tm* local = std::localtime(&now);
+    std::tm local_tm = localTimeNow();
+    std::tm* local = &local_tm;
 
-    uint32_t seconds_since_midnight =
-        local->tm_hour * 3600 + local->tm_min * 60 + local->tm_sec;
+    uint32_t seconds_since_midnight = local->tm_hour * 3600 + local->tm_min * 60 + local->tm_sec;
 
     // 18.2065 ticks per second (BIOS timer rate: 1193182 / 65536)
     uint32_t ticks = static_cast<uint32_t>(seconds_since_midnight * 18.2065);
 
-    m_cpu->setReg16(Reg16::CX, static_cast<uint16>(ticks >> 16));    // High word
-    m_cpu->setReg16(Reg16::DX, static_cast<uint16>(ticks & 0xFFFF)); // Low word
+    m_cpu->setReg16(Reg16::CX, static_cast<uint16>(ticks >> 16));     // High word
+    m_cpu->setReg16(Reg16::DX, static_cast<uint16>(ticks & 0xFFFF));  // Low word
     m_cpu->setReg8(Reg8::AL, m_midnight_flag ? 1 : 0);
     m_midnight_flag = false;
 }
@@ -409,35 +427,35 @@ void InterruptController::int1A_SetSystemTime() {
 }
 
 void InterruptController::int1A_GetRTCTime() {
-    std::time_t now = std::time(nullptr);
-    std::tm* local = std::localtime(&now);
+    std::tm local_tm = localTimeNow();
+    std::tm* local = &local_tm;
 
     // Convert to BCD
     auto toBCD = [](int val) -> uint8 {
         return static_cast<uint8>(((val / 10) << 4) | (val % 10));
     };
 
-    m_cpu->setReg8(Reg8::CH, toBCD(local->tm_hour));   // Hours in BCD
-    m_cpu->setReg8(Reg8::CL, toBCD(local->tm_min));    // Minutes in BCD
-    m_cpu->setReg8(Reg8::DH, toBCD(local->tm_sec));    // Seconds in BCD
-    m_cpu->setReg8(Reg8::DL, 0);                        // Daylight saving (0=standard)
-    m_cpu->flags.CF = false;                             // Success
+    m_cpu->setReg8(Reg8::CH, toBCD(local->tm_hour));  // Hours in BCD
+    m_cpu->setReg8(Reg8::CL, toBCD(local->tm_min));   // Minutes in BCD
+    m_cpu->setReg8(Reg8::DH, toBCD(local->tm_sec));   // Seconds in BCD
+    m_cpu->setReg8(Reg8::DL, 0);                      // Daylight saving (0=standard)
+    m_cpu->flags.CF = false;                          // Success
 }
 
 void InterruptController::int1A_GetRTCDate() {
-    std::time_t now = std::time(nullptr);
-    std::tm* local = std::localtime(&now);
+    std::tm local_tm = localTimeNow();
+    std::tm* local = &local_tm;
 
     auto toBCD = [](int val) -> uint8 {
         return static_cast<uint8>(((val / 10) << 4) | (val % 10));
     };
 
     int year = local->tm_year + 1900;
-    m_cpu->setReg8(Reg8::CH, toBCD(year / 100));        // Century in BCD
-    m_cpu->setReg8(Reg8::CL, toBCD(year % 100));        // Year in BCD
-    m_cpu->setReg8(Reg8::DH, toBCD(local->tm_mon + 1)); // Month in BCD
-    m_cpu->setReg8(Reg8::DL, toBCD(local->tm_mday));    // Day in BCD
-    m_cpu->flags.CF = false;                              // Success
+    m_cpu->setReg8(Reg8::CH, toBCD(year / 100));         // Century in BCD
+    m_cpu->setReg8(Reg8::CL, toBCD(year % 100));         // Year in BCD
+    m_cpu->setReg8(Reg8::DH, toBCD(local->tm_mon + 1));  // Month in BCD
+    m_cpu->setReg8(Reg8::DL, toBCD(local->tm_mday));     // Day in BCD
+    m_cpu->flags.CF = false;                             // Success
 }
 
-} // namespace e2emu
+}  // namespace e2emu
