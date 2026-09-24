@@ -50,7 +50,14 @@ foreach(dir ${E2EMU_SOURCE_FOLDERS})
   list(APPEND E2EMU_HEADERS ${headers})
 endforeach()
 
-add_library(e2emu STATIC ${E2EMU_SOURCES} ${E2EMU_HEADERS})
+option(E2EMU_SHARED "Build e2emu as a shared library" ${BUILD_SHARED_LIBS})
+if(E2EMU_SHARED)
+  add_library(e2emu SHARED ${E2EMU_SOURCES} ${E2EMU_HEADERS})
+  # The API is plain C++ classes without export macros.
+  set_target_properties(e2emu PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+else()
+  add_library(e2emu STATIC ${E2EMU_SOURCES} ${E2EMU_HEADERS})
+endif()
 
 target_include_directories(e2emu PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
